@@ -2,3 +2,14 @@ idea/
 .idea/
 .ipynb_checkpoints
 *.orig
+
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
