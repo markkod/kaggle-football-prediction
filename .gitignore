@@ -2,6 +2,7 @@ idea/
 .idea/
 .ipynb_checkpoints
 *.orig
+.DS_Store
 
 
 # Byte-compiled / optimized / DLL files
