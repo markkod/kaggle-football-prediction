@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 import warnings
 from pathlib import Path
 
-from modules.random_forest.helpers import create_feables, find_best_classifier
+from modules.utils.data_processing import create_feables, find_best_classifier
 
 warnings.simplefilter("ignore")
 
@@ -45,6 +45,8 @@ inputs = feables.drop('match_api_id', axis = 1)
 #Exploring the data and creating visualizations
 labels = inputs.loc[:,'label']
 features = inputs.drop('label', axis = 1)
+
+
 
 #Splitting the data into Train, Calibrate, and Test data sets
 X_train_calibrate, X_test, y_train_calibrate, y_test = train_test_split(features, labels, test_size = 0.1, random_state = 0, stratify = labels)
