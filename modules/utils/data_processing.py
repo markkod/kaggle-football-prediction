@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn import model_selection
 from time import time
@@ -367,3 +367,8 @@ def find_best_classifier(classifiers, dm_reductions, scorer, X_t, y_t, X_c, y_c,
 
     #Return storage
     return clfs_return, dm_reduce_return, train_scores, test_scores
+
+def build_confusion_matrix(y_true, y_pred):
+    return pd.DataFrame(confusion_matrix(y_true, y_pred, labels=[2, 1, 0]),
+                        index=['Home wins (true)', 'Draw (true)', 'Away wins (true)'],
+                        columns=['Home wins (pred)', 'Draw (pred)', 'Away wins (pred)'])
