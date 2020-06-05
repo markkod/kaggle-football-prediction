@@ -337,37 +337,6 @@ def get_bookkeeper_data(matches, bookkeepers, horizontal = True):
     #Return bookkeeper data
     return bk_data
 
-def find_best_classifier(classifiers, dm_reductions, scorer, X_t, y_t, X_c, y_c, X_v, y_v, cv_sets, params, jobs):
-    ''' Tune all classifier and dimensionality reduction combiantions to find best classifier. '''
-
-    #Initialize result storage
-    clfs_return = []
-    dm_reduce_return = []
-    train_scores = []
-    test_scores = []
-
-
-    #Loop through dimensionality reductions
-    for dm in dm_reductions:
-
-        #Loop through classifiers
-        for clf in classifiers:
-
-            #Grid search, calibrate, and test the classifier
-            clf, dm_reduce, train_score, test_score = train_calibrate_predict(clf = clf, dm_reduction = dm, X_train = X_t, y_train = y_t,
-                                                                              X_calibrate = X_c, y_calibrate = y_c,
-                                                                              X_test = X_v, y_test = y_v, cv_sets = cv_sets,
-                                                                              params = params[clf], scorer = scorer, jobs = int(jobs), use_grid_search = True)
-
-            #Append the result to storage
-            clfs_return.append(clf)
-            dm_reduce_return.append(dm_reduce)
-            train_scores.append(train_score)
-            test_scores.append(test_score)
-
-    #Return storage
-    return clfs_return, dm_reduce_return, train_scores, test_scores
-
 def build_confusion_matrix(y_true, y_pred):
     return pd.DataFrame(confusion_matrix(y_true, y_pred, labels=[2, 1, 0]),
                         index=['Home wins (true)', 'Draw (true)', 'Away wins (true)'],
