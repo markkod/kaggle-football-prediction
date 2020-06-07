@@ -84,6 +84,13 @@ def get_goals_conceided(matches, team):
     #Return total goals
     return total_goals
 
+def get_draws(matches, team):
+    home_draws = int(matches.home_team_goal[(matches.home_team_api_id == team) & (matches.home_team_goal == matches.away_team_goal)].count())
+    away_draws = int(matches.away_team_goal[(matches.away_team_api_id == team) & (matches.away_team_goal == matches.home_team_goal)].count())
+
+    return home_draws + away_draws
+
+
 def get_wins(matches, team):
     ''' Get the number of wins of a specfic team from a set of matches. '''
 
@@ -131,6 +138,8 @@ def get_match_features(match, matches, x = 10):
     result.loc[0, 'games_won_away_team'] = get_wins(matches_away_team, away_team)
     result.loc[0, 'games_against_won'] = get_wins(last_matches_against, home_team)
     result.loc[0, 'games_against_lost'] = get_wins(last_matches_against, away_team)
+    result.loc[0, 'games_draw_home_team'] = get_draws(matches_home_team, home_team)
+    result.loc[0, 'games_draw_away_team'] = get_draws(matches_away_team, away_team)
 
     #Return match features
     return result.loc[0]
