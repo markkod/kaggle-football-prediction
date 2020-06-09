@@ -13,9 +13,7 @@ The dataset contains the statistics of over 25 000 matches and 10 000 players fr
 # Data preprocessing
 While browsing the dataset it was obvious, that much of the information there was weirdly formatted and much of the data there was really not of use to use. 
 
-Firstly, we disregarded all of the information regarding the players as the many of the players did not have their stats there and the origin of the player data is from a video game series, that may provide the most accurate estimations of a player's skill level. 
-
-Secondly, we disregarded the data that the model should not know beforehand. This meant that in the match information, data such as home team goals, away team goals, shots on target, shots off target, fouls commited, etc. were all removed.
+Firstly, we disregarded the data that the model should not know beforehand. This meant that in the match information, data such as home team goals, away team goals, shots on target, shots off target, fouls commited, etc. were all removed.
 
 As for the more techincal side of things, we dropped columns that contained null values and joined different tables in the dataset to help us in the later phases of the model development.
 
