@@ -1,10 +1,6 @@
 # KAGGLE FOOTBALL PREDICTION
 ### Team members: Mark-Eerik Kodar, Liina Anette Pärtel, Robin Sulg, Karl Riis
 
-
-# TODO:
-- Update the best hyperparameters if new and better are found
-
 # Introduction
 
 The aim of this project is to predict the outcome of a football match using a neural network. This neural network model will be compared to a baseline random forest classifier and in the end we will calculate how much money we would end up making or losing if we had bet 1 euro on each game. 
@@ -53,36 +49,53 @@ def create_model(learning_rate=1e-5, dropout_rate=0.1):
     return model
 ```
 
-After creating this new model we needed to find the best possible learning rate and dropout rate for our model. This was done again using grid search.
+After creating this new model we needed to find the best possible learning rate and dropout rate and the hidden layer size for our model. This was done again using grid search.
 
 ```python
 learning_rates = [1e-3, 5e-3, 1e-4, 5e-4, 1e-5, 1e-6]
 dropout_rates = [0.05, 0.1, 0.2]
+hidden_sizes = [8, 16, 64, 128]
 
 best_lr = None
 best_dr = None
+best_model = None
+best_hs = None
 
 best_val_acc = 0
-best_model = None
+
 for lr in learning_rates:
     for dr in dropout_rates:
-        model = create_model(lr, dr)
-        history = model.fit(
-            X_train,
-            y_train_categorical,
-            epochs=100,
-            validation_split=0.1,
-            verbose=0)
-        val_acc = history.history['val_accuracy'][-1]
+        for hs in hidden_sizes:
+            model = create_model(lr, dr, hs)
+            history = model.fit(
+                X_train,
+                y_train_categorical,
+                epochs=100,
+                validation_split=0.1,
+                verbose=0)
+            val_acc = max(history.history['val_accuracy'])
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+                best_lr = lr
+                best_dr = dr
+                best_hs = hs
+                best_model = model
         
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            best_lr = lr
-            best_dr = dr
-            best_model = model
 ```
 
-With grid search we got that the best learning rate for us was 1e-5 and the best dropout rate was 0.2. 
+Initially, we tried to train our model with minibatches of various sizes, but we saw that this produced really poor validation accuracy that was even worse than random in many cases. Therefore modified our grid search so that we trained our model on the whole training dataset, as the initial dataset was not that big and therefore the training times were not that long. During the grid search we saw that the results were significantly better than before. 
+
+Finally we found that the best hyperparameters were as follows: 
+- Learning rate: 1e-05
+- Dropout rate: 0.1
+- Hidden size: 64
+
+As mentioned before, then we kept the last 3 month match data as the test set. Now using the best model found during grid search we wanted to find out how accurate it would be on the test set. 
+
+The accuracy on the test set was 52.57% and the corresponding confusion matrix is below:
+
+<img src='images/confusion.png'>
+
 
 # Betting
     # TODO
