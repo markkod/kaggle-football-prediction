@@ -63,6 +63,7 @@ hidden_sizes = [8, 16, 64, 128]
 best_lr = None
 best_dr = None
 best_model = None
+best_hs = None
 
 best_val_acc = 0
 
@@ -81,11 +82,23 @@ for lr in learning_rates:
                 best_val_acc = val_acc
                 best_lr = lr
                 best_dr = dr
+                best_hs = hs
                 best_model = model
         
 ```
 
 Initially, we tried to train our model with minibatches of various sizes, but we saw that this produced really poor validation accuracy that was even worse than random in many cases. Therefore modified our grid search so that we trained our model on the whole training dataset, as the initial dataset was not that big and therefore the training times were not that long. During the grid search we saw that the results were significantly better than before. 
+
+Finally we found that the best hyperparameters were as follows: 
+- Learning rate: 1e-05
+- Dropout rate: 0.1
+- Hidden size: 64
+
+As mentioned before, then we kept the last 3 month match data as the test set. Now using the best model found during grid search we wanted to find out how accurate it would be on the test set. 
+
+The accuracy on the test set was 52.57% and the corresponding confusion matrix is below:
+
+<img src='images/confusion.png'>
 
 
 # Betting
