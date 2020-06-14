@@ -3,7 +3,7 @@
 
 # Introduction
 
-The aim of this project is to predict the outcome of a football match.  In short, our goal is to build a preliminary random forest model that can be compared to the final neural network model. 
+The aim of this project is to predict the outcome of a football match using a neural network. This neural network model will be compared to a baseline random forest classifier and in the end we will calculate how much money we would end up making or losing if we had bet 1 euro on each game. 
 
 # Data
 The dataset of that the model is trained on can be found here: https://www.kaggle.com/hugomathien/soccer. 
@@ -13,43 +13,89 @@ The dataset contains the statistics of over 25 000 matches and 10 000 players fr
 # Data preprocessing
 While browsing the dataset it was obvious, that much of the information there was weirdly formatted and some of the data there was really not of use to use. 
 
-Firstly, we disregarded the data that the model should not know beforehand. This meant that in the match information, data such as home team goals, away team goals, shots on target, shots off target, fouls commited, etc. were all removed.
+Firstly, we disregarded the data that the model should not know beforehand. This meant that in the match information, data such as home team goals, away team goals, shots on target, shots off target, fouls committed, etc. were all removed.
 
-As for the more techincal side of things, we dropped columns that contained null values and joined different tables in the dataset to help us in the later phases of the model development. 
+Secondly, we threw away the player data, which was lacking in the sense that there were a lot of null values and also the player data was based on FIFA video game series which may not provide the most accurate estimate of a player's abilities. 
 
-As for the preprocessing steps we have yet to solve, then we noticed that the data is quite imbalanced, as the labels of win, draw, lose are so that there are significantly more win labels and equal amount of draw and lose labels.
+As for the more technical side of things, we dropped columns that contained null values and joined different tables in the dataset to help us in the later phases of the model development. Examples of this include creating features of match win percentage overall, home and away win percentages, win percentage against certain opponent and so on. Also, we noticed that the initial data was quite imbalanced as the labels of home team winning were in the majority as seen below. 
 
-<img src='imbalanced_data.png'>
+<img src='images/imbalanced.png'>
 
- Also we have thought about normalizing the data, but have yet to decide how to do it. 
+This problem was solved by oversampling using the <code>imbalanced-learn</code> package. After re-sampling the training dataset we got equal amount of labels for each class.
+
+<img src='images/balanced.png'>
+
+In addition to all that, we needed a way to test our model in a real-life scenario. The way we decided to do that, was to order the dataset by match dates take the last 3 months of matches as our test set on which we can simulate our betting. 
 
 # Baseline model
 
-We chose a simple random forest model to act as a baseline. To implement this we chose the sklearn RandomForest model. The initial model without much tuning returned 51.2% accuracy. 
-
-Below is the confusion matrix of the predictions of the model. 
-
-<img src='rf_cf.png'>
+    ## TODO
 
 # Neural Network
 
-We built our model using Keras with the following architecture:
+We started our development of the neural network model by just adding some fully connected layers on top of each other, added L2 regularization, used ReLU activation function and used some fixed learning and dropout rate. The loss function that we used was categorical cross-entropy as this loss function suits best our multi-class classification task. This loss function also assumes, that the last layer has the same number of hidden nodes that there are classes and that the last layer uses softmax as an activation function.
 
-<img src='keras_layers.png'>
+This model did not turn out very well even though the validation accuracies were decent (~52%), as this model predicted home wins only. This meant several hours of research of things that could be wrong with our model. This research led us to believe, that our network has maybe too many layers and there might be a problem of ReLU nodes dying. The latter might also be caused too high of a learning rate. Therefore we decided to try whether grid search would help to solve that problem. 
 
-In depth, the first layer uses ReLU as an activation function and uses L2 regularization with the value of 0.0002. The next two layers have the same setup. The fourth layer uses softmax as an activation function and has the same regularization parameter. The optimizer that we use is Adam. The loss function that we use is categorical cross-entropy as this is the de facto standard for multi-class classification problems. 
+Unfortunately it did not help and after doing some more research we started off from scratch. We decided to now use tanh activation function as with this function there was a smaller probability of neurons dying. We created a model that consisted of just two hidden layers. As seen below, the first layer had 8 units, the tanh activation function and L2 regularization. After that we added dropout and another fully connected layer with softmax activation function. Also we used Adam as the optimizer. 
 
-The current model has an accuracy of 53.2%, but as we can see from the confusion matrix below, then there is a problem with our model, as it does not predict any draws which we'll have to work on later.
+```python
+def create_model(learning_rate=1e-5, dropout_rate=0.1):
+    model = Sequential() 
+    model.add(Dense(8, input_dim=columns, activation='tanh', kernel_regularizer='l2'))
+    model.add(Dropout(dropout_rate))
+    model.add(Dense(3, activation='softmax'))
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(lr=learning_rate), metrics=['accuracy'])
+    return model
+```
 
-<img src='nn_cf.png'>
+After creating this new model we needed to find the best possible learning rate and dropout rate and the hidden layer size for our model. This was done again using grid search.
 
-# Work that still needs to be done:
+```python
+learning_rates = [1e-3, 5e-3, 1e-4, 5e-4, 1e-5, 1e-6]
+dropout_rates = [0.05, 0.1, 0.2]
+hidden_sizes = [8, 16, 64, 128]
 
-- Data preprocessing steps mentioned above.
-- We have yet to try out and think through the architecture of the neural network. (e.g. the number of layers, dropout, etc. )
-- In addition to that we have yet to do hyperparameter optimization.
+best_lr = None
+best_dr = None
+best_model = None
+best_hs = None
 
-# Questions that have arisen:
-- What causes the NN to "ignore" one class? During several runs of the neural network, we have seen it maybe predicts only a few (up to 5) draws but in most cases it predicts zeros. 
-- Would making the labels into one-hot-encoded vectors help?
-- What causes the loss value to be exactly the same over several epochs?
+best_val_acc = 0
+
+for lr in learning_rates:
+    for dr in dropout_rates:
+        for hs in hidden_sizes:
+            model = create_model(lr, dr, hs)
+            history = model.fit(
+                X_train,
+                y_train_categorical,
+                epochs=100,
+                validation_split=0.1,
+                verbose=0)
+            val_acc = max(history.history['val_accuracy'])
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+                best_lr = lr
+                best_dr = dr
+                best_hs = hs
+                best_model = model
+        
+```
+
+Initially, we tried to train our model with minibatches of various sizes, but we saw that this produced really poor validation accuracy that was even worse than random in many cases. Therefore modified our grid search so that we trained our model on the whole training dataset, as the initial dataset was not that big and therefore the training times were not that long. During the grid search we saw that the results were significantly better than before. 
+
+Finally we found that the best hyperparameters were as follows: 
+- Learning rate: 1e-05
+- Dropout rate: 0.1
+- Hidden size: 64
+
+As mentioned before, then we kept the last 3 month match data as the test set. Now using the best model found during grid search we wanted to find out how accurate it would be on the test set. 
+
+The accuracy on the test set was 52.57% and the corresponding confusion matrix is below:
+
+<img src='images/confusion.png'>
+
+
+# Betting
+    # TODO

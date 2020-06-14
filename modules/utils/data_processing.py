@@ -103,7 +103,7 @@ def get_wins(matches, team):
     #Return total wins
     return total_wins
 
-def get_match_features(match, matches, x = 10):
+def get_match_features(match, matches):
     ''' Create match specific features for a given match. '''
 
     #Define variables
@@ -112,11 +112,11 @@ def get_match_features(match, matches, x = 10):
     away_team = match.away_team_api_id
 
     #Get last x matches of home and away team
-    matches_home_team = get_last_matches(matches, date, home_team, x = 10)
-    matches_away_team = get_last_matches(matches, date, away_team, x = 10)
+    matches_home_team = get_last_matches(matches, date, home_team, x = 20)
+    matches_away_team = get_last_matches(matches, date, away_team, x = 20)
 
     #Get last x matches of both teams against each other
-    last_matches_against = get_last_matches_against_eachother(matches, date, home_team, away_team, x = 3)
+    last_matches_against = get_last_matches_against_eachother(matches, date, home_team, away_team, x = 6)
 
     #Create goal variables
     home_goals = get_goals(matches_home_team, home_team)
@@ -156,7 +156,7 @@ def create_feables(matches, fifa, bookkeepers, get_overall = False, horizontal =
     start = time()
 
     #Get match features for all matches
-    match_stats = matches.apply(lambda x: get_match_features(x, matches, x = 10), axis = 1)
+    match_stats = matches.apply(lambda x: get_match_features(x, matches), axis = 1)
 
     #Create dummies for league ID feature
     dummies = pd.get_dummies(match_stats['league_id']).rename(columns = lambda x: 'League_' + str(x))
