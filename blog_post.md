@@ -58,31 +58,36 @@ After creating this new model we needed to find the best possible learning rate 
 ```python
 learning_rates = [1e-3, 5e-3, 1e-4, 5e-4, 1e-5, 1e-6]
 dropout_rates = [0.05, 0.1, 0.2]
+hidden_sizes = [8, 16, 64, 128]
 
 best_lr = None
 best_dr = None
+best_model = None
 
 best_val_acc = 0
-best_model = None
+
 for lr in learning_rates:
     for dr in dropout_rates:
-        model = create_model(lr, dr)
-        history = model.fit(
-            X_train,
-            y_train_categorical,
-            epochs=100,
-            validation_split=0.1,
-            verbose=0)
-        val_acc = history.history['val_accuracy'][-1]
+        for hs in hidden_sizes:
+            model = create_model(lr, dr, hs)
+            history = model.fit(
+                X_train,
+                y_train_categorical,
+                epochs=100,
+                validation_split=0.1,
+                verbose=0)
+            val_acc = max(history.history['val_accuracy'])
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+                best_lr = lr
+                best_dr = dr
+                best_model = model
         
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
-            best_lr = lr
-            best_dr = dr
-            best_model = model
 ```
 
 With grid search we got that the best learning rate for us was 1e-5 and the best dropout rate was 0.2. 
+
+
 
 # Betting
     # TODO
