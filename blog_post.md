@@ -85,6 +85,7 @@ for lr in learning_rates:
         
 ```
 
+Initially, we tried to train our model with minibatches of various sizes, but we saw that this produced really poor validation accuracy that was even worse than random in many cases. Therefore modified our grid search so that we trained our model on the whole training dataset, as the initial dataset was not that big and therefore the training times were not that long. During the grid search we saw that the results were significantly better than before. 
 
 
 # Betting
