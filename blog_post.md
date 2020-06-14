@@ -1,10 +1,6 @@
 # KAGGLE FOOTBALL PREDICTION
 ### Team members: Mark-Eerik Kodar, Liina Anette Pärtel, Robin Sulg, Karl Riis
 
-
-# TODO:
-- Update the best hyperparameters if new and better are found
-
 # Introduction
 
 The aim of this project is to predict the outcome of a football match using a neural network. This neural network model will be compared to a baseline random forest classifier and in the end we will calculate how much money we would end up making or losing if we had bet 1 euro on each game. 
