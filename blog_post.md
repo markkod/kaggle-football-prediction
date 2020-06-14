@@ -53,7 +53,7 @@ def create_model(learning_rate=1e-5, dropout_rate=0.1):
     return model
 ```
 
-After creating this new model we needed to find the best possible learning rate and dropout rate for our model. This was done again using grid search.
+After creating this new model we needed to find the best possible learning rate and dropout rate and the hidden layer size for our model. This was done again using grid search.
 
 ```python
 learning_rates = [1e-3, 5e-3, 1e-4, 5e-4, 1e-5, 1e-6]
@@ -84,8 +84,6 @@ for lr in learning_rates:
                 best_model = model
         
 ```
-
-With grid search we got that the best learning rate for us was 1e-5 and the best dropout rate was 0.2. 
 
 
 
