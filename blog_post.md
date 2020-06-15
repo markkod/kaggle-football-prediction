@@ -94,12 +94,24 @@ The accuracy on the test set was 52.57% and the corresponding confusion matrix i
 
 # Neural Network vs. Random Forest (baseline)
 
-As it was mentioned above the initial neural network model achieved 52-53% level of accuracy and that was because it predicted everything as home team winning. In addition to the problems in our neural network, part of that was also due to the skewness of the data that we trained the model with. To give the reader a better understanding then almost 50% of the instances in the train set were labelled as “home team won” and the remaining half were distributed as “home team lost” (30%) and “draw” (20%). Because of this skewness, the model was much more inclined to predicting that the home team won which led to good accuracy as whilst splitting the data into the test set it was also more likely that matches with “home team won” ended up in the test set. As it was stated in the data pre-processing chapter we used up-sampling (oversampling) to combat this issue. This way the distribution of the labels in the train dataset was even thus removing the predisposition to predicting “home team won”.
+As it was mentioned above the initial neural network model achieved 52-53% level of accuracy and that was because it predicted everything as “home team winning”. In addition to the problems in our neural network, part of that was also due to the skewness of the data that we trained the model with. To give the reader a better understanding then almost 50% of the instances in the train set were labelled as “home team won” and the remaining half were distributed as “home team lost” (30%) and “draw” (20%). Because of the skewness, the model was much more inclined to predicting that the home team won which led to good accuracy because while splitting the data into the test and train set, it was also more likely that matches with “home team won” ended up in the test set. As it was stated in the data pre-processing chapter we used up-sampling (oversampling) to combat this issue. This way the distribution of the labels in the train dataset were even and thus removing the predisposition to predicting “home team won”.
 
-With the skewed data, the accuracies of our classifiers were 52% for the neural network and 54% for the random forest (200 trees in the forest). After sampling the data, the neural network performance dropped but the accuracy of random forest went higher. With tree size of 200 in a forest and tree nodes being expanded until all leaves contain less than 2 samples, test accuracy for the random forest is around 57% and 58% when using 1000 trees. As for the neural network the best accuracy that we saw was ~ 53% but more often it would range from 45 – 50% which is worse than just predicting that home team is going to win.
+With the skewed data, the accuracies of our classifiers were 52% for the neural network and 52% for the random forest (200 trees in the forest). After sampling the data, the neural network performance dropped a bit, but the accuracy of random forest went higher. With tree size of 200 and tree nodes being expanded until all leaves contain less than 2 samples, test accuracy for the random forest was around 57% and 58% when using 1000 trees. The best accuracy observed for the random forest was ~ 60%. As for the neural network the best accuracy that we saw was ~ 53% but more often it would range between 45 – 50% which is about the same or worse than just predicting that the home team is going to win.
+
+To visualize one of the decision trees in the forest we have added a visualization of a decision tree with maximum depth of 3 (otherwise the decision tree is unreadable).
+
+<img src='images/random_forest_decision_tree.png'>
+
+
+The confusion matrix of the random forest:
+
+
+<img src='images/confusion_matrix_random_forest.png'>
+
 
 
 In conclusion in our comparison Random Forest is superior to our neural network when it comes to predicting football results. This conclusion also appears to be shared more often in the world of Machine Learning. 
+
 
 
 # Betting
