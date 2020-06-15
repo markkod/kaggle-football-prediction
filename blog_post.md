@@ -114,4 +114,16 @@ For this, we used an algorithm:
         * Check if prediction matches the true label
             * If yes, then multiply the 1€ and the coefficient of the agency and add it to the total
 
-As a baseline, we also tried constant betting
+As a baseline, we tried constant betting. The results for these are below:  
+<img src='images/betting_constant_home.png'>  
+<img src='images/betting_constant_away.png'>  
+<img src='images/betting_constant_draw.png'>  
+
+The x-axis shows how many games we have made bets on and the y-axis shows how much money we have at any time. We can see that constant betting mostly means losing money.
+
+Then we used our neural network to make bets:  
+<img src='images/betting_neural_network.png'>  
+
+For comparison we also used random forest to make bets:  
+<img src='images/betting_random_forest.png'>  
+
