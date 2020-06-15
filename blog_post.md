@@ -127,3 +127,7 @@ Then we used our neural network to make bets:
 For comparison we also used random forest to make bets:  
 <img src='images/betting_random_forest.png'>  
 
+We also tried to maximise the odds of getting more money. For this we found the expected value for each label: we multiplied the probability of this label given by the model and the coefficient given by the betting agency and used the biggest value as prediction. The results are below.
+<img src='images/betting_best_odds.png'>  
+
+
