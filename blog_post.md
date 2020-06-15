@@ -136,10 +136,16 @@ The x-axis shows how many games we have made bets on and the y-axis shows how mu
 Then we used our neural network to make bets:  
 <img src='images/betting_neural_network.png'>  
 
+Here you can see that with most betting agencies we made a small profit (around 20-40 euros).  
+
 For comparison we also used random forest to make bets:  
 <img src='images/betting_random_forest.png'>  
 
+Here you can see that the profit was much bigger, around 300 euros. Random forest is much better at predicting the result than our neural network, which was also seen above in the difference in accuracy.
+
 We also tried to maximise the odds of getting more money. For this we found the expected value for each label: we multiplied the probability of this label given by the model and the coefficient given by the betting agency and used the biggest value as prediction. The results are below.
 <img src='images/betting_best_odds.png'>  
+
+As we can see, this resulted in a loss of money, averaging at -70 euros.
 
 
