@@ -103,4 +103,15 @@ In conclusion in our comparison Random Forest is superior to our neural network 
 
 
 # Betting
-    # TODO
+
+As we saw above, accuracy is not a good indicator how good a model is. To test the model, we decided to simulate the betting process using the games from last 3 months.
+
+For this, we used an algorithm:
+* For every betting agency
+    * Start with 0 money
+    * For every game in the last 3 months
+        * "Bet" (subtract) 1€
+        * Check if prediction matches the true label
+            * If yes, then multiply the 1€ and the coefficient of the agency and add it to the total
+
+As a baseline, we also tried constant betting
